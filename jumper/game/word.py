@@ -24,6 +24,6 @@ class Word:
    
 
 # For testing purposes:
-# word = Word(["cat", "apple"])
-# print(word.check_guess("a"))
-# word.print_revealed_word()
+word = Word(["cat", "apple"])
+print(word.check_guess("a"))
+word.print_revealed_word()
