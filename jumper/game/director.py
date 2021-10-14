@@ -24,10 +24,10 @@ class Director():
 
         #self.parachute = Parachute()
         #self.word = Word()
-        self.word_list = []
+        
 
 
-    def configure_list(self):
+    def pick_list(self):
         """Asks the user if they want to pick an external word list or use the default
         ARGS:
             self (Director): an instance of Director
@@ -45,8 +45,7 @@ class Director():
         
         # use external
         if user_input in ["Y", "y"]:
-            file_path = self.wordlist_generator.GUI_select_file("Select word list")
-            list = self.wordlist_generator.import_list(file_path)
+            list = self.wordlist_generator.external_list()
 
         # use default
         else:
@@ -58,11 +57,72 @@ class Director():
     def start_game(self):
 
         # pick a word list
-        self.configure_list()
+        word_list = self.pick_list()
+
+        # game loop
+        
+        while self.keep_playing:
+        
+        # start a round
+            self.game_over = False
+            self.has_won = False
+            self.parachute_hp = 5
+            self.WordObject = Word(word_list)
+            word_length = self.WordObject.word_len
+
+            # pick a word
+            self.console.display_output(f"The word is {word_length} letters long.")
+
+            
+            while not self.game_over and not self.has_won:
+                guess = self.start_turn()
+                self.mid_turn(guess)
+                self.end_turn()
+                continue
+
+            if game_over:
+                # game over stuff
+                pass
+            else:
+                # winner stuff
+                pass
+            # display parachute and word
+
+
+    def start_turn(self):
+        """ The start of a turn
+        """
+        self.console.display_output(f"PARACHUTE HP: {self.parachute_hp}")
+        self.WordObject.print_revealed_word()
+        
+        guess = self.console.take_input("Enter a letter: ")
+        # add code that will only accept one letter
+        return guess
+
+
+    def mid_turn(self, guess):
+        """ Calculations once player guesses a letter
+        """
+        result = self.WordObject.check_guess(guess)
+        if result == True:
+            pass
+        else:
+            self.parachute_hp += -1
+
+    def end_turn(self):
+        if self.parachute_hp == 0:
+            # game over stuff
+            self.game_over = True
+
+        elif the_word_is_completely_revealed == True:
+        #elif: #the word is completely revealed:
+            self.has_won = True
+
+        else:
+            pass
+
+
+
 
     def word(self):
         self.word = Word()
-
-
-
-    

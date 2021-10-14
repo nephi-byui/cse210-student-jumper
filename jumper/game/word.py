@@ -1,4 +1,5 @@
 import random
+#from console import Console
 
 class Word: 
     def __init__(self, list_of_words):
@@ -6,9 +7,13 @@ class Word:
         self.word_len = len(self.secret_word)
         self.revealed_word = ["_"] * self.word_len
 
+        #self.console = Console()
+
     def print_revealed_word(self):
         for item in self.revealed_word:
+            # figure out how to port this to console.display_output
             print(item, end="")
+        print("\n")
 
     def check_guess(self, guess):
         if guess in self.secret_word: 
@@ -16,14 +21,21 @@ class Word:
             counter = 0
             for letter in self.secret_word:
                 if letter == guess:
-                    self.revealed_word[counter]  = letter
+                    self.revealed_word[counter] = letter
                 counter+=1
-            return "correct"
+            #return "correct"
+            return True
         else:
-            return "incorrect"
-   
+            #return "incorrect"
+            return False
 
-# For testing purposes:
-word = Word(["cat", "apple"])
-print(word.check_guess("a"))
-word.print_revealed_word()
+   
+def main():
+    # For testing purposes:
+    word = Word(["cat", "apple"])
+    print(word.check_guess("a"))
+    word.print_revealed_word()
+
+if __name__ == "__main__":
+    main()
+
