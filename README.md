@@ -34,4 +34,7 @@ root                    (project root folder)
 
 ## Authors
 ---
-* TODO: Add your names and emails here
+* Alan Crisanto - alanvcrisanto@gmail.com
+* Tianna DeSpain - des17015@byui.edu
+* Nephi Malit - byui@nephi.malit.me
+* Tatenda F. Mukaro - muk21002@byui.edu
