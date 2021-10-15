@@ -83,8 +83,8 @@ class Director():
             # if dead
             elif parachute_hp == 0:
                 parachute_ascii = [ "       ",
-                                    "       ",
-                                    "       ",
+                                    " (x_x) ",
+                                    "YOU LOSE",
                                     "       ",
                                     "   X   ",
                                     "  /|\  ",
