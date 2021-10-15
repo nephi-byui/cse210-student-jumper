@@ -27,7 +27,7 @@ class Director():
         self.parachute_hp = 4
 
     def pick_list(self):
-        """Asks the user if they want to pick an external word list or use the default
+        """Asks the user if they want to pick an external word list or use the default.
         ARGS:
             self (Director): an instance of Director
         RETURNS:
