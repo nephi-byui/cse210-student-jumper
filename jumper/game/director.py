@@ -26,30 +26,34 @@ class Director():
         self.keep_playing = True
         self.parachute_hp = 4
 
+    
     def pick_list(self):
-        """Asks the user if they want to pick an external word list or use the default.
-        ARGS:
-            self (Director): an instance of Director
-        RETURNS:
-            a list of words
         """
-        while True:
-            user_input = self.console.take_input("Would you like to use an external (CSV) word list? (y/n) ")
-
-            if user_input in ["Y", "y", "N", "n"]:
-                break
-            else:
-                ("Invalid input.")
-                continue
-        
+        """
+#        """Asks the user if they want to pick an external word list or use the default.
+#        ARGS:
+#            self (Director): an instance of Director
+#        RETURNS:
+#            a list of words
+#        """
+#        while True:
+#            user_input = self.console.take_input("Would you like to use an external (CSV) word list? (y/n) ")
+#
+#            if user_input in ["Y", "y", "N", "n"]:
+#                break
+#            else:
+#                ("Invalid input.")
+#                continue
+#        
         # use external
-        if user_input in ["Y", "y"]:
-            list = self.wordlist_generator.external_list()
+#        if user_input in ["Y", "y"]:
+#            list = self.wordlist_generator.external_list()
 
         # use default
-        else:
-            list = self.wordlist_generator.default_list()
+#        else:
+#            list = self.wordlist_generator.default_list()
 
+        list = self.wordlist_generator.default_list()
         return list
 
     def draw_parachute(self, safe=False):
