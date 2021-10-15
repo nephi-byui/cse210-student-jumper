@@ -1,5 +1,4 @@
-import csv
-import tkinter
+import csv 
 from tkinter import filedialog
 
 class WordListGenerator():
