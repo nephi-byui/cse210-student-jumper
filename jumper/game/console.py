@@ -17,13 +17,14 @@ class Console:
         """
         return input(prompt)
 
-    def display_output(self, string):
+
+    def display_output(self, string=""):
         """ Prints text to be read by the user
             Instead of using print() in your functions
             use this method - console.display_output()
         Args:
             self (Console): An instance of Console
-            string: the string to be printed
+            string: the string to be printed, empty by default
         """
         print(string)
 
@@ -33,7 +34,7 @@ def main():
 
     console = Console()
 
-    # Print ask a question
+    # Ask a question
     favorite_food = console.take_input("What is your favorite food? ")
 
     # Display output
