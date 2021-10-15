@@ -54,7 +54,8 @@ class Word:
             Boolean
         """
         if guess in self.secret_word and len(guess) == 1: 
-            self.word_length -=1
+            # why?
+            #self.word_length -=1
             counter = 0
             for letter in self.secret_word:
                 if letter == guess:

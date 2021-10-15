@@ -57,13 +57,14 @@ class Director():
 
         return list
 
-    def draw_parachute(self, parachute_hp, safe=False):
+    def draw_parachute(self, safe=False):
         """Draws the state of the parachute
         ARGS:
             self (Director)     : an instance of Director()
             parachute_hp (INT)  : the amount of HP remaining
             safe (BOOL)         : whether or not the game is already won (False by default)
         """
+        parachute_hp = self.parachute_hp
         hits_taken = 4 - parachute_hp
         
         # if game is still ongoing
@@ -131,6 +132,7 @@ class Director():
         self.keep_playing = True
         self.WordObject = Word(word_list)
         word_length = self.WordObject.word_length
+        self.already_guessed = [ ]
 
         self.console.display_output(f"The word is {word_length} letters long.")
         self.console.display_output()
@@ -153,7 +155,7 @@ class Director():
             self.mid_turn(guess)
 
             # display stats
-            self.status_report()
+            #self.status_report()
 
             # check for game-ending conditions before 
             self.keep_playing = self.is_keep_playing()
@@ -161,28 +163,68 @@ class Director():
 
         if not self.keep_playing and self.parachute_hp == 0:
             # game over stuff
-            self.draw_parachute(self.parachute_hp)
-            self.console.display_output("You crashed! Game over.")
+            self.draw_parachute()
+            self.console.display_output("(x_x) You crashed! Game over.")
 
         elif not self.keep_playing and self.parachute_hp > 0:
-            # winner stuff
-            self.console.display_output("You reached the ground safely. Good job!")
+            self.draw_parachute(safe=True)
+            self.console.display_output("(^_^) You reached the ground safely. Good job!")
+
+    def status_report(self):
+        """ Displays information before starting a new guessing round
+            self (Director)     : an instance of Director()
+        """
+        guesses_left = self.parachute_hp
+
+        if guesses_left == 4:
+            hp_report = (f"(^_^) Your parachute is untouched!")
+        elif guesses_left == 3:
+            hp_report = (f"(-_-) 3 wrong guesses left.")
+        elif guesses_left == 2:
+            hp_report = (f"(o_o) 2 wrong guesses remaining.")     
+        elif guesses_left == 1:
+            hp_report = (f"(@_@) Be careful! One more mistake and you're a goner!")
+        elif guesses_left == 0:
+            hp_report = (f"(x_x) ...")
+
+        self.console.display_output(hp_report)
 
     def start_turn(self):
-        """ The start of a turn
+        """ The start of a turn.
+            Displays the status of the word being guessed,
+            the letters that have been uncovered
+            takes the input and makes sure it is valid
+            and returns that input
         ARGS:
             self (Director)     : an instance of Director()
+        RETURNS:
+            a string
         """
         # fetch the word revealed so far
         self.console.display_output(f"{self.WordObject.revealed_word} ({self.WordObject.word_length}-letter word)")
         # display state of parachute
-        self.draw_parachute(self.parachute_hp)
+        self.draw_parachute()
         
-        # ask for input:
-        guess = self.console.take_input("Guess a letter [a-z]: ")
-        guess = guess.lower()
-        return guess
+        # displays remaining wrong guesses left
+        self.status_report()
 
+        # ask for input:
+        while True:
+            guess = self.console.take_input("[ ? ] Guess a letter [a-z]: ")
+            guess = guess.lower()
+
+            if len(guess) != 1:
+                self.console.display_output(f" !!!  Invalid input. Enter one letter only.")
+                continue
+            elif guess in self.already_guessed:
+                self.console.display_output(f" !!! You already guessed \"{guess},\" try another letter.")
+                continue
+            else:
+                # add the letter to the list
+                self.already_guessed.append(guess)
+                break
+
+        return guess
 
     def mid_turn(self, guess):
         """ Calculations once player guesses a letter,
@@ -193,33 +235,11 @@ class Director():
         """
         result = self.WordObject.check_guess(guess)
         if result == True:
-            self.console.display_output(f"Word contains {guess}!")
+            self.console.display_output(f"(^_^) Word contains \"{guess.upper()}\"")
         else:
-            self.console.display_output(f"Word does not contain {guess}! Ouch!")
+            self.console.display_output(f"(T_T) Word does not contain \"{guess.upper()}\"")
             self.parachute_hp += -1
-
-    def status_report(self):
-        """ Displays information before starting a new guessing round
-            self (Director)     : an instance of Director()
-        """
-        guesses_left = self.parachute_hp
-
-        if guesses_left == 4:
-            hp_report = (f"Your parachute is untouched!")
-        elif guesses_left == 3:
-            hp_report = (f"No reason to panic. You still have 3 wrong guesses left.")
-        elif guesses_left == 2:
-            hp_report = (f"You have 2 wrong guesses remaining.")     
-        elif guesses_left == 1:
-            hp_report = (f"Be careful! One more mistake and you're a goner!")
-        elif guesses_left == 0:
-            hp_report = (f"Be careful! One more mistake and you're a goner!")
-
-        self.console.display_output(hp_report)
         self.console.display_output()               #newline
-
-
-
 
     def is_keep_playing(self):
         """ Check for game-ending conditions before starting the next round:
@@ -240,7 +260,6 @@ class Director():
         else:
             # nothing
             return True
-
 
 # testing
 def main():
