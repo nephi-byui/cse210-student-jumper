@@ -16,6 +16,10 @@ class Director():
     """
 
     def __init__(self):
+        """
+        ARGS:
+            self (Director)     : an instance of Director()        
+        """
         self.keep_playing = True
 
         self.console = Console()
@@ -53,115 +57,189 @@ class Director():
 
         return list
 
-    def draw_parachute(self, parachute_hp):
+    def draw_parachute(self, parachute_hp, safe=False):
         """Draws the state of the parachute
         ARGS:
-            self (Director) : an instance of Director()
-            hp (INT)        : the amount of HP remaining
+            self (Director)     : an instance of Director()
+            parachute_hp (INT)  : the amount of HP remaining
+            safe (BOOL)         : whether or not the game is already won (False by default)
         """
         hits_taken = 4 - parachute_hp
         
-        # if alive
-        if hp > 0:
-            parachute_ascii = [ "  ___  ",
-                                " /___\ ",
-                                " \   / ",
-                                "  \ /  ",
-                                "   0   ",
-                                "  /|\  ",
-                                "  / \  ",
-                                "       ", 
-                                "^^^^^^^" ]
-            
-            # replace destroyed lines with empty lines
-            for i in range(0, hits_taken):
-                parachute_ascii[i] = "       "
+        # if game is still ongoing
+        if not safe:
+            # if alive
+            if parachute_hp > 0:
+                parachute_ascii = [ "  ___  ",
+                                    " /___\ ",
+                                    " \   / ",
+                                    "  \ /  ",
+                                    "   0   ",
+                                    "  /|\  ",
+                                    "  / \  ",
+                                    "       ", 
+                                    "^^^^^^^" ]
+                
+                # replace destroyed lines with empty lines
+                for i in range(0, hits_taken):
+                    parachute_ascii[i] = "       "
 
-        # if dead
-        elif hp == 0:
+            # if dead
+            elif parachute_hp == 0:
+                parachute_ascii = [ "       ",
+                                    "       ",
+                                    "       ",
+                                    "       ",
+                                    "   X   ",
+                                    "  /|\  ",
+                                    "  / \  ",
+                                    "       ", 
+                                    "^^^^^^^" ]
+
+        # game is won
+        elif safe:
             parachute_ascii = [ "       ",
                                 "       ",
+                                " SAFE! ",
                                 "       ",
-                                "       ",
-                                "   X   ",
-                                "  /|\  ",
+                                "  \o/  ",
+                                "   |   ",
                                 "  / \  ",
                                 "       ", 
                                 "^^^^^^^" ]
+
         # print the output
         for line in parachute_ascii:
             self.console.display_output(line)
 
 
     def start_game(self):
+        """ The function that is called to start the game
+        ARGS:
+            self (Director)     : an instance of Director()
+        """        
 
         # pick a word list
         word_list = self.pick_list()
-
-        # game loop
-        
-        while self.keep_playing:
-        
+       
         # start a round
-            self.game_over = False
-            self.has_won = False
-            self.parachute_hp = 4
-            self.WordObject = Word(word_list)
-            word_length = self.WordObject.word_length
+        self.game_over = False
+        self.has_won = False
+        self.parachute_hp = 4
 
-            # pick a word
-            self.console.display_output(f"The word is {word_length} letters long.")
+        # create Word()
+        self.keep_playing = True
+        self.WordObject = Word(word_list)
+        word_length = self.WordObject.word_length
 
+        self.console.display_output(f"The word is {word_length} letters long.")
+        self.console.display_output()
+
+        # guessing loop
+        while True:
+            # draw parachute
             
-            while not self.game_over and not self.has_won:
-                guess = self.start_turn()
-                self.mid_turn(guess)
-                self.end_turn()
-                continue
-
-            if self.game_over:
-                # game over stuff
+            if self.keep_playing:
                 pass
-            elif self.has_won:
-                # winner stuff
-                pass
-            # display parachute and word
+            else:
+                # game end code
+                break
 
+            # display the revealed word, take player input
+            guess = self.start_turn()
+
+            # check guess, update parachute_hp
+            # draw parachute 
+            self.mid_turn(guess)
+
+            # display stats
+            self.status_report()
+
+            # check for game-ending conditions before 
+            self.keep_playing = self.is_keep_playing()
+            continue            
+
+        if not self.keep_playing and self.parachute_hp == 0:
+            # game over stuff
+            self.draw_parachute(self.parachute_hp)
+            self.console.display_output("You crashed! Game over.")
+
+        elif not self.keep_playing and self.parachute_hp > 0:
+            # winner stuff
+            self.console.display_output("You reached the ground safely. Good job!")
 
     def start_turn(self):
         """ The start of a turn
+        ARGS:
+            self (Director)     : an instance of Director()
         """
-        self.console.display_output(f"PARACHUTE HP: {self.parachute_hp}")
-
-        # fetch the revealed word string
-        self.console.display_output(self.WordObject.revealed_word)
+        # fetch the word revealed so far
+        self.console.display_output(f"{self.WordObject.revealed_word} ({self.WordObject.word_length}-letter word)")
+        # display state of parachute
+        self.draw_parachute(self.parachute_hp)
         
-        guess = self.console.take_input("Enter a letter: ")
-        # add code that will only accept one letter
+        # ask for input:
+        guess = self.console.take_input("Guess a letter [a-z]: ")
+        guess = guess.lower()
         return guess
 
 
     def mid_turn(self, guess):
-        """ Calculations once player guesses a letter
+        """ Calculations once player guesses a letter,
+        displays letters left, guesses left.
+        ARGS:
+            self (Director)     : an instance of Director()
+            guess (STR)         : a string
         """
         result = self.WordObject.check_guess(guess)
         if result == True:
-            pass
+            self.console.display_output(f"Word contains {guess}!")
         else:
+            self.console.display_output(f"Word does not contain {guess}! Ouch!")
             self.parachute_hp += -1
 
-    def end_turn(self):
+    def status_report(self):
+        """ Displays information before starting a new guessing round
+            self (Director)     : an instance of Director()
+        """
+        guesses_left = self.parachute_hp
+
+        if guesses_left == 4:
+            hp_report = (f"Your parachute is untouched!")
+        elif guesses_left == 3:
+            hp_report = (f"No reason to panic. You still have 3 wrong guesses left.")
+        elif guesses_left == 2:
+            hp_report = (f"You have 2 wrong guesses remaining.")     
+        elif guesses_left == 1:
+            hp_report = (f"Be careful! One more mistake and you're a goner!")
+        elif guesses_left == 0:
+            hp_report = (f"Be careful! One more mistake and you're a goner!")
+
+        self.console.display_output(hp_report)
+        self.console.display_output()               #newline
+
+
+
+
+    def is_keep_playing(self):
+        """ Check for game-ending conditions before starting the next round:
+        ARGS:
+            self (Director)     : an instance of Director()
+        RETURNS:
+            a boolean
+        """
+        # game over (LOSS)
         if self.parachute_hp == 0:
             # game over stuff
-            self.game_over = True
-
-        elif self.WordObject.secret_word == self.WordObject.revealed_word:
-        #elif: #the word is completely revealed:
-            self.has_won = True
+            return False
+        
+        # game over (WIN)
+        elif self.WordObject.secret_word == self.WordObject.revealed_word: # the word is completely revealed
+            return False
 
         else:
-            pass
-
+            # nothing
+            return True
 
 
 # testing
