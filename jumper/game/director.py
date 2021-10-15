@@ -107,8 +107,7 @@ class Director():
         # print the output
         for line in parachute_ascii:
             self.console.display_output(line)
-
-
+            
     def start_game(self):
         """ The function that is called to start the game
         ARGS:
@@ -154,7 +153,7 @@ class Director():
         if not self.keep_playing and self.parachute_hp == 0:
             # game over stuff
             self.draw_parachute()
-            self.console.display_output("(x_x) You crashed! Game over.")
+            self.console.display_output(f"(x_x) You crashed! Game over. The word was: \"{self.WordObject.secret_word.upper()}\"")
 
         elif not self.keep_playing and self.parachute_hp > 0:
             self.draw_parachute(safe=True)
