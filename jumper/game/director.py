@@ -108,7 +108,7 @@ class Director():
                                 "YOU WIN",
                                 "       ",
                                 "  \o/  ",
-                                "   |   ",
+                               f"   |    you got \"{self.WordObject.secret_word.upper()}\"",
                                 "  / \  ",
                                 "       ", 
                                 "^^^^^^^" ]
