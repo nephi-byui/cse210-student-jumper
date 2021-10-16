@@ -92,8 +92,8 @@ class Director():
             # if dead
             elif parachute_hp == 0:
                 parachute_ascii = [ "       ",
-                                    " (x_x) ",
-                                    f"{self.WordObject.secret_word.upper()}",
+                                   f" (x_x)  the word was {self.WordObject.secret_word.upper()}",
+                                    "       ",
                                     "       ",
                                     "   X   ",
                                     "  /|\  ",
