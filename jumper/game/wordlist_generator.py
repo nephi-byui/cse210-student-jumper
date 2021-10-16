@@ -2,12 +2,14 @@ from tkinter import filedialog
 
 class WordListGenerator():
     """
-    Responsible for picking a word list.
-    The user is allowed to either pick a different word list or to use a default word list.
+    Responsible for picking a word list, or extracting a word list from a file.
     """
 
     def __init__(self):
-        pass
+        """
+        PARAMETTERS:
+            self (WordListGenerator)        : an instance of WordListGenerator  
+        """
 
     def GUI_select_file(self,window_title):
         """
@@ -22,7 +24,6 @@ class WordListGenerator():
                                             title=window_title,
                                             filetypes= (
                                                 ("All files","*.*"),
-                                                ("Executable", "*.exe"),
                                                 ("Text files","*.txt")
                                                 ))
         return file_path
