@@ -36,10 +36,22 @@ class WordListGenerator():
         RETURNS:
             a lit of words
         """
-        # will replace this with code that imports the word list
-        # -nephi
-        list  = ["red", "yellow", "blue"]
-        ################################################
+        list = []
+        with open(path) as file:
+            for line in file:
+
+                # strip newlines
+                line = line.strip("\n")
+
+                # replace spaces with commas
+                line = line.replace(" ",",")
+
+                # split words
+                words_from_line = line.split(",")
+                for word in words_from_line:
+
+                    # append individual words to list
+                    list.append(word)
 
         return list
 

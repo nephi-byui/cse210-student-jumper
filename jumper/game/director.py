@@ -36,20 +36,24 @@ class Director():
         RETURNS:
             a list of words
         """
-        is_valid_input = False
+        can_proceed = False
 
-        while not is_valid_input:
-            user_input = self.console.take_input("Would you like to use an external (CSV) word list? (y/n) ")
+        while not can_proceed:
+            user_input = self.console.take_input("Would you like to use an external word list? ('y'=yes, 'n'=no, 'i'=info) ")
 
             if user_input in ["Y", "y", "N", "n"]:
-                is_valid_input = True
+                can_proceed = True
                 break
+            elif user_input in ["I", "i"]:
+                self.console.display_output("Accepted format: text file where words are separated by commas, spaces, or line breaks.")
+                continue
             else:
                 self.console.display_output("Invalid input.")
                 continue
         
        # use external
         if user_input in ["Y", "y"]:
+            self.console.take_input("(format: text file with one word per line. Press Enter to continue:")
             list = self.wordlist_generator.external_list()
             if list == False:
                 list = self.wordlist_generator.default_list()
