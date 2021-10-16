@@ -96,7 +96,7 @@ class Director():
                                     "       ",
                                     "       ",
                                     "   X   ",
-                                   f"  /|\   the word was {self.WordObject.secret_word.upper()}",
+                                   f"  /|\   the word was \"{self.WordObject.secret_word.upper()}\"",
                                     "  / \  ",
                                     "       ", 
                                     "^^^^^^^" ]
