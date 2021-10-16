@@ -154,14 +154,12 @@ class Director():
             self.keep_playing = self.is_keep_playing()
             continue            
 
+        
         if not self.keep_playing and self.parachute_hp == 0:
-            # game over stuff
-            self.draw_parachute()
-            self.console.display_output(f"(x_x) You crashed! Game over. The word was: \"{self.WordObject.secret_word.upper()}\"")
+            self.game_over()
 
         elif not self.keep_playing and self.parachute_hp > 0:
-            self.draw_parachute(safe=True)
-            self.console.display_output("(^_^) You reached the ground safely. Good job!")
+            self.victory()
 
     def status_report(self):
         """ Displays information before starting a new guessing round
@@ -253,6 +251,15 @@ class Director():
         else:
             # nothing
             return True
+
+    def victory(self):
+        self.draw_parachute(safe=True)
+        self.console.display_output("(^_^) You reached the ground safely. Good job!")
+
+    def game_over(self):
+        self.draw_parachute()
+        self.console.display_output(f"(x_x) You crashed! Game over.")
+        self.console.display_output(f"The word was: \"{self.WordObject.secret_word.upper()}\"")
 
 # testing
 def main():
