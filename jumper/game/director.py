@@ -11,7 +11,7 @@ class Director():
         console (Console)                       : an instance of Console
 
         keep_playing (BOOL)     : end game if False
-        parachute_hp (INT)      : HP counter, starts at 4, game over if reaches 0
+        parachute_hp (INT)      : HP counter, game over if reaches 0
     """
 
     def __init__(self):
@@ -24,7 +24,8 @@ class Director():
         self.wordlist_generator = WordListGenerator()
 
         self.keep_playing = True
-        self.parachute_hp = 4
+        self.starting_hp = 4
+        self.parachute_hp = self.starting_hp
 
     
     def pick_list(self):
@@ -64,7 +65,7 @@ class Director():
             safe (BOOL)         : whether or not the game is already won (False by default)
         """
         parachute_hp = self.parachute_hp
-        hits_taken = 4 - parachute_hp
+        hits_taken = self.starting_hp - parachute_hp
         
         # if game is still ongoing
         if not safe:
@@ -167,12 +168,12 @@ class Director():
         """
         guesses_left = self.parachute_hp
 
-        if guesses_left == 4:
-            hp_report = (f"(^_^) Your parachute is untouched!")
+        if guesses_left > 3:
+            hp_report = (f"(^_^) {guesses_left} wrong guesses left.")
         elif guesses_left == 3:
             hp_report = (f"(-_-) 3 wrong guesses left.")
         elif guesses_left == 2:
-            hp_report = (f"(o_o) 2 wrong guesses remaining.")     
+            hp_report = (f"(o_o) 2 wrong guesses left.")     
         elif guesses_left == 1:
             hp_report = (f"(@_@) Be careful! One more mistake and you're a goner!")
         elif guesses_left == 0:
