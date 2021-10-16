@@ -53,7 +53,7 @@ class Director():
         
        # use external
         if user_input in ["Y", "y"]:
-            self.console.take_input("(format: text file with one word per line. Press Enter to continue:")
+            # open file select window
             list = self.wordlist_generator.external_list()
             if list == False:
                 list = self.wordlist_generator.default_list()
