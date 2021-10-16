@@ -1,5 +1,3 @@
-import csv
-import tkinter
 from tkinter import filedialog
 
 class WordListGenerator():
@@ -50,11 +48,14 @@ class WordListGenerator():
         ARGS:
             self (WordListGenerator)        : an instance of WordListGenerator
         RETURNS:
-            a list of words
+            a list of words or False
         """
         path = self.GUI_select_file("Select word list: ")
-        list = self.import_list(path)
-        return list
+        if path != "":
+            list = self.import_list(path)
+            return list
+        else:
+            return False
 
     def default_list(self):
         """ Returns a list of words

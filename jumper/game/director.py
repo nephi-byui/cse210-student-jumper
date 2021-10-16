@@ -1,18 +1,17 @@
-
 from game.console import Console
 from game.wordlist_generator import WordListGenerator
 from game.word import Word
-#from game.parachute import Parachute
 
 class Director():
     """
     
     ATTRIBUTES:
-        word (Word)             :   an instance of Word
-        console (Console)       :   an instance of Console
-        parachute (Parachute)   :   an instance of Parachute
+        WordObject (Word)                       : an instance of Word
+        wordlist_generator (WordListGenerator)  : an instance of WordListGenerator
+        console (Console)                       : an instance of Console
 
-        keep_playing (BOOL)     :   game will end
+        keep_playing (BOOL)     : end game if False
+        parachute_hp (INT)      : HP counter, game over if reaches 0
     """
 
     def __init__(self):
@@ -20,39 +19,44 @@ class Director():
         ARGS:
             self (Director)     : an instance of Director()        
         """
-        self.keep_playing = True
-
+        
         self.console = Console()
         self.wordlist_generator = WordListGenerator()
-        
 
-        #self.parachute = Parachute()
-        #self.word = Word()
-        
+        self.keep_playing = True
+        self.starting_hp = 4
+        self.parachute_hp = self.starting_hp
 
-
+    
     def pick_list(self):
-        """Asks the user if they want to pick an external word list or use the default
+
+        """Asks the user if they want to pick an external word list or use the default.
         ARGS:
             self (Director): an instance of Director
         RETURNS:
             a list of words
         """
-        while True:
-            user_input = self.console.take_input("Would you like to use an external word list? (y/n) ")
+        is_valid_input = False
+
+        while not is_valid_input:
+            user_input = self.console.take_input("Would you like to use an external (CSV) word list? (y/n) ")
 
             if user_input in ["Y", "y", "N", "n"]:
+                is_valid_input = True
                 break
             else:
-                ("Invalid input.")
+                self.console.display_output("Invalid input.")
                 continue
         
-        # use external
+       # use external
         if user_input in ["Y", "y"]:
             list = self.wordlist_generator.external_list()
-
+            if list == False:
+                list = self.wordlist_generator.default_list()
+                self.console.display_output("[ *** ] No external list selected. Using default word list.")
         # use default
         else:
+            self.console.display_output("[ *** ] Default word list selected.")
             list = self.wordlist_generator.default_list()
 
         return list
@@ -65,7 +69,7 @@ class Director():
             safe (BOOL)         : whether or not the game is already won (False by default)
         """
         parachute_hp = self.parachute_hp
-        hits_taken = 4 - parachute_hp
+        hits_taken = self.starting_hp - parachute_hp
         
         # if game is still ongoing
         if not safe:
@@ -88,11 +92,11 @@ class Director():
             # if dead
             elif parachute_hp == 0:
                 parachute_ascii = [ "       ",
-                                    "       ",
+                                    " (x_x) ",
                                     "       ",
                                     "       ",
                                     "   X   ",
-                                    "  /|\  ",
+                                   f"  /|\   the word was \"{self.WordObject.secret_word.upper()}\"",
                                     "  / \  ",
                                     "       ", 
                                     "^^^^^^^" ]
@@ -100,11 +104,11 @@ class Director():
         # game is won
         elif safe:
             parachute_ascii = [ "       ",
-                                "       ",
-                                " SAFE! ",
+                                " (^_^) ",
+                                "YOU WIN",
                                 "       ",
                                 "  \o/  ",
-                                "   |   ",
+                               f"   |    you got \"{self.WordObject.secret_word.upper()}\"",
                                 "  / \  ",
                                 "       ", 
                                 "^^^^^^^" ]
@@ -112,8 +116,7 @@ class Director():
         # print the output
         for line in parachute_ascii:
             self.console.display_output(line)
-
-
+            
     def start_game(self):
         """ The function that is called to start the game
         ARGS:
@@ -122,11 +125,6 @@ class Director():
 
         # pick a word list
         word_list = self.pick_list()
-       
-        # start a round
-        self.game_over = False
-        self.has_won = False
-        self.parachute_hp = 4
 
         # create Word()
         self.keep_playing = True
@@ -138,14 +136,15 @@ class Director():
         self.console.display_output()
 
         # guessing loop
-        while True:
+        #while True:
+        while self.keep_playing:
             # draw parachute
             
-            if self.keep_playing:
-                pass
-            else:
-                # game end code
-                break
+            #if self.keep_playing:
+            #    pass
+            #else:
+            #    # game end code
+            #    break
 
             # display the revealed word, take player input
             guess = self.start_turn()
@@ -161,14 +160,12 @@ class Director():
             self.keep_playing = self.is_keep_playing()
             continue            
 
+        
         if not self.keep_playing and self.parachute_hp == 0:
-            # game over stuff
-            self.draw_parachute()
-            self.console.display_output("(x_x) You crashed! Game over.")
+            self.game_over()
 
         elif not self.keep_playing and self.parachute_hp > 0:
-            self.draw_parachute(safe=True)
-            self.console.display_output("(^_^) You reached the ground safely. Good job!")
+            self.victory()
 
     def status_report(self):
         """ Displays information before starting a new guessing round
@@ -176,12 +173,12 @@ class Director():
         """
         guesses_left = self.parachute_hp
 
-        if guesses_left == 4:
-            hp_report = (f"(^_^) Your parachute is untouched!")
+        if guesses_left > 3:
+            hp_report = (f"(^_^) {guesses_left} wrong guesses left.")
         elif guesses_left == 3:
             hp_report = (f"(-_-) 3 wrong guesses left.")
         elif guesses_left == 2:
-            hp_report = (f"(o_o) 2 wrong guesses remaining.")     
+            hp_report = (f"(o_o) 2 wrong guesses left.")     
         elif guesses_left == 1:
             hp_report = (f"(@_@) Be careful! One more mistake and you're a goner!")
         elif guesses_left == 0:
@@ -209,7 +206,9 @@ class Director():
         self.status_report()
 
         # ask for input:
-        while True:
+        is_valid_input = False
+
+        while not is_valid_input:
             guess = self.console.take_input("[ ? ] Guess a letter [a-z]: ")
             guess = guess.lower()
 
@@ -222,6 +221,7 @@ class Director():
             else:
                 # add the letter to the list
                 self.already_guessed.append(guess)
+                is_valid_input = True
                 break
 
         return guess
@@ -260,6 +260,15 @@ class Director():
         else:
             # nothing
             return True
+
+    def victory(self):
+        self.draw_parachute(safe=True)
+        self.console.display_output("(^_^) You reached the ground safely. Good job!")
+
+    def game_over(self):
+        self.draw_parachute()
+        self.console.display_output(f"(x_x) You crashed! Game over.")
+        #self.console.display_output(f"The word was: \"{self.WordObject.secret_word.upper()}\"")
 
 # testing
 def main():
