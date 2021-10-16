@@ -31,7 +31,6 @@ class Console:
 # for testing
 def main():
     # Create a Console object
-
     console = Console()
 
     # Ask a question

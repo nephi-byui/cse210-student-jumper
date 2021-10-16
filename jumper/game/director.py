@@ -19,17 +19,14 @@ class Director():
         ARGS:
             self (Director)     : an instance of Director()        
         """
-        
         self.console = Console()
         self.wordlist_generator = WordListGenerator()
 
         self.keep_playing = True
         self.starting_hp = 4
         self.parachute_hp = self.starting_hp
-
     
     def pick_list(self):
-
         """Asks the user if they want to pick an external word list or use the default.
         ARGS:
             self (Director): an instance of Director
@@ -122,7 +119,7 @@ class Director():
             self.console.display_output(line)
             
     def start_game(self):
-        """ The function that is called to start the game
+        """ The function that is called to start the game, containing the entire game loop
         ARGS:
             self (Director)     : an instance of Director()
         """        
