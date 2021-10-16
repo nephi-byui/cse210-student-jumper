@@ -92,11 +92,11 @@ class Director():
             # if dead
             elif parachute_hp == 0:
                 parachute_ascii = [ "       ",
-                                   f" (x_x)  the word was {self.WordObject.secret_word.upper()}",
+                                    " (x_x) ",
                                     "       ",
                                     "       ",
                                     "   X   ",
-                                    "  /|\  ",
+                                   f"  /|\   the word was {self.WordObject.secret_word.upper()}",
                                     "  / \  ",
                                     "       ", 
                                     "^^^^^^^" ]
@@ -268,7 +268,7 @@ class Director():
     def game_over(self):
         self.draw_parachute()
         self.console.display_output(f"(x_x) You crashed! Game over.")
-        self.console.display_output(f"The word was: \"{self.WordObject.secret_word.upper()}\"")
+        #self.console.display_output(f"The word was: \"{self.WordObject.secret_word.upper()}\"")
 
 # testing
 def main():
