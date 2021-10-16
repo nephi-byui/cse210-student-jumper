@@ -36,10 +36,13 @@ class Director():
         RETURNS:
             a list of words
         """
-        while True:
+        is_valid_input = False
+
+        while not is_valid_input:
             user_input = self.console.take_input("Would you like to use an external (CSV) word list? (y/n) ")
 
             if user_input in ["Y", "y", "N", "n"]:
+                is_valid_input = True
                 break
             else:
                 self.console.display_output("Invalid input.")
