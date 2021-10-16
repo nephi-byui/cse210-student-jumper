@@ -133,14 +133,15 @@ class Director():
         self.console.display_output()
 
         # guessing loop
-        while True:
+        #while True:
+        while self.keep_playing:
             # draw parachute
             
-            if self.keep_playing:
-                pass
-            else:
-                # game end code
-                break
+            #if self.keep_playing:
+            #    pass
+            #else:
+            #    # game end code
+            #    break
 
             # display the revealed word, take player input
             guess = self.start_turn()
