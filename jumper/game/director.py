@@ -29,32 +29,33 @@ class Director():
 
     
     def pick_list(self):
-        """
-        """
-#        """Asks the user if they want to pick an external word list or use the default.
-#        ARGS:
-#            self (Director): an instance of Director
-#        RETURNS:
-#            a list of words
-#        """
-#        while True:
-#            user_input = self.console.take_input("Would you like to use an external (CSV) word list? (y/n) ")
-#
-#            if user_input in ["Y", "y", "N", "n"]:
-#                break
-#            else:
-#                ("Invalid input.")
-#                continue
-#        
-        # use external
-#        if user_input in ["Y", "y"]:
-#            list = self.wordlist_generator.external_list()
 
+        """Asks the user if they want to pick an external word list or use the default.
+        ARGS:
+            self (Director): an instance of Director
+        RETURNS:
+            a list of words
+        """
+        while True:
+            user_input = self.console.take_input("Would you like to use an external (CSV) word list? (y/n) ")
+
+            if user_input in ["Y", "y", "N", "n"]:
+                break
+            else:
+                self.console.display_output("Invalid input.")
+                continue
+        
+       # use external
+        if user_input in ["Y", "y"]:
+            list = self.wordlist_generator.external_list()
+            if list == False:
+                list = self.wordlist_generator.default_list()
+                self.console.display_output("[ *** ] No external list selected. Using default word list.")
         # use default
-#        else:
-#            list = self.wordlist_generator.default_list()
+        else:
+            self.console.display_output("[ *** ] Default word list selected.")
+            list = self.wordlist_generator.default_list()
 
-        list = self.wordlist_generator.default_list()
         return list
 
     def draw_parachute(self, safe=False):
@@ -89,7 +90,7 @@ class Director():
             elif parachute_hp == 0:
                 parachute_ascii = [ "       ",
                                     " (x_x) ",
-                                    "YOU LOSE",
+                                    f"{self.WordObject.secret_word.upper()}",
                                     "       ",
                                     "   X   ",
                                     "  /|\  ",
