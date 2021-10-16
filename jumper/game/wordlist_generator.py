@@ -29,12 +29,12 @@ class WordListGenerator():
 
     def import_list(self, path):
         """
-        Loads a CSV file and returns a list of words
+        Takes a file, processes it, and returns a list of words
         PARAMETERS:
             self (WordListGenerator)        : an instance of WordListGenerator
-            path (STR)                      :   the path of a file
+            path (STR)                      : the path of a file
         RETURNS:
-            a lit of words
+            a list of words
         """
         list = []
         with open(path) as file:
