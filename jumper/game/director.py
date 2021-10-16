@@ -203,7 +203,9 @@ class Director():
         self.status_report()
 
         # ask for input:
-        while True:
+        is_valid_input = False
+
+        while not is_valid_input:
             guess = self.console.take_input("[ ? ] Guess a letter [a-z]: ")
             guess = guess.lower()
 
@@ -216,6 +218,7 @@ class Director():
             else:
                 # add the letter to the list
                 self.already_guessed.append(guess)
+                is_valid_input = True
                 break
 
         return guess
