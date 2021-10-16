@@ -37,3 +37,18 @@ root                    (project root folder)
 * Tianna DeSpain - des17015@byui.edu
 * Nephi Malit - byui@nephi.malit.me
 * Tatenda F. Mukaro - muk21002@byui.edu
+
+## Basic Features
+---
+* The puzzle is a secret word randomly chosen from a list.
+* The player guesses a letter in the puzzle.
+* If the guess is correct, the letter is revealed.
+* If the guess is incorrect, a line is cut on the player's parachute.
+* Play continues until the puzzle is solved or the player has no more parachute.
+
+## Extra Features
+---
+* Option to import a wordlist for an external file
+* Displaying the number of wrong guesses remaining
+* Enhanced input validation with user-friendly messages and smileys
+* Enhanced game play and game over messages
